@@ -13,7 +13,8 @@ export async function POST(request: Request) {
 
   const tokens = await prisma.passwordResetToken.findMany({
     where: { email: parsed.data.email, expires: { gt: new Date() } },
-    orderBy: { createdAt: "desc" }
+    orderBy: { createdAt: "desc" },
+    select: { id: true, tokenHash: true }
   });
 
   const matched = await asyncFind(tokens, (item) => bcrypt.compare(parsed.data.token, item.tokenHash));
